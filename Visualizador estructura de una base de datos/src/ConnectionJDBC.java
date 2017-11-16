@@ -4,9 +4,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class connectionJDBC {
+public class ConnectionJDBC {
 
-    public connectionJDBC() {
+    public ConnectionJDBC() {
     }
 
     public void connection() throws SQLException, ClassNotFoundException {
