@@ -9,8 +9,7 @@ public class Visualizador extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        selectionMode = new javax.swing.ButtonGroup();
         Conexión = new javax.swing.JPanel();
         usuarioLabel = new javax.swing.JLabel();
         nombre = new javax.swing.JTextField();
@@ -29,8 +28,6 @@ public class Visualizador extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         campos = new javax.swing.JList<>();
         integrantesGrupo = new javax.swing.JLabel();
-
-        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Visualizador estructura de una base de datos");
@@ -76,10 +73,13 @@ public class Visualizador extends javax.swing.JFrame {
 
         ModoDeSelección.setBorder(javax.swing.BorderFactory.createTitledBorder("Modo de Selección\n"));
 
+        selectionMode.add(simple);
         simple.setText("Selección Simple");
 
+        selectionMode.add(intervalo);
         intervalo.setText("Selección Intervalo");
 
+        selectionMode.add(intervaloMultiple);
         intervaloMultiple.setText("Selección Multiple Intervalos");
 
         javax.swing.GroupLayout ModoDeSelecciónLayout = new javax.swing.GroupLayout(ModoDeSelección);
@@ -224,7 +224,6 @@ public class Visualizador extends javax.swing.JFrame {
     private javax.swing.JPanel Conexión;
     private javax.swing.JPanel ModoDeSelección;
     private javax.swing.JButton añadirTabla;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JList<String> campos;
     private javax.swing.JButton conectarBoton;
     private javax.swing.JPasswordField contraseña;
@@ -233,10 +232,10 @@ public class Visualizador extends javax.swing.JFrame {
     private javax.swing.JLabel integrantesGrupo;
     private javax.swing.JToggleButton intervalo;
     private javax.swing.JToggleButton intervaloMultiple;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField nombre;
+    private javax.swing.ButtonGroup selectionMode;
     private javax.swing.JToggleButton simple;
     private javax.swing.JList<String> tablas;
     private javax.swing.JLabel usuarioLabel;

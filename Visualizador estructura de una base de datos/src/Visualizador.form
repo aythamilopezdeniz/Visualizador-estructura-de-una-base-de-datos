@@ -2,12 +2,7 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
-    </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jButton1"/>
-      </Properties>
+    <Component class="javax.swing.ButtonGroup" name="selectionMode">
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -174,16 +169,25 @@
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="simple">
           <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="selectionMode"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Selecci&#xf3;n Simple"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JToggleButton" name="intervalo">
           <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="selectionMode"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Selecci&#xf3;n Intervalo"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JToggleButton" name="intervaloMultiple">
           <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="selectionMode"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Selecci&#xf3;n Multiple Intervalos"/>
           </Properties>
         </Component>
