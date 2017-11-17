@@ -1,3 +1,6 @@
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 public class Visualizador extends javax.swing.JFrame {
 
     public Visualizador() {
@@ -41,6 +44,11 @@ public class Visualizador extends javax.swing.JFrame {
         contraseñaLabel.setText("Contraseña:");
 
         conectarBoton.setText("Conectar");
+        conectarBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conectarBotonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ConexiónLayout = new javax.swing.GroupLayout(Conexión);
         Conexión.setLayout(ConexiónLayout);
@@ -147,7 +155,7 @@ public class Visualizador extends javax.swing.JFrame {
                     .addComponent(eliminarTabla))
                 .addGap(6, 6, 6)
                 .addGroup(BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -168,7 +176,7 @@ public class Visualizador extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(integrantesGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(217, 217, 217))
+                .addGap(220, 220, 220))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,13 +187,32 @@ public class Visualizador extends javax.swing.JFrame {
                 .addComponent(ModoDeSelección, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(BaseDeDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(integrantesGrupo)
-                .addGap(42, 42, 42))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void conectarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarBotonActionPerformed
+        if(nombre.getText().isEmpty())
+            JOptionPane.showMessageDialog(rootPane, "El campo de usuario no es correcto.", 
+                    "Campo usuario", JOptionPane.ERROR_MESSAGE);
+        if(contraseña.getText().isEmpty())
+            JOptionPane.showMessageDialog(rootPane, "El campo de password no es correcto.", 
+                    "Campo password", JOptionPane.ERROR_MESSAGE);
+        ConnectionJDBC sql = new ConnectionJDBC(nombre.getText(), contraseña.getText());
+        try {
+            sql.connection();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Error al acceder a la base de datos.", 
+                    "Error de acceso a la base de datos", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Error del driver de la base de datos.", 
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_conectarBotonActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

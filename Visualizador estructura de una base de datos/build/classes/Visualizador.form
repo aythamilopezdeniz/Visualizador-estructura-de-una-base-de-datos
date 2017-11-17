@@ -40,7 +40,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="integrantesGrupo" min="-2" pref="286" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="217" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="220" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -51,11 +51,11 @@
               <Component id="Conexión" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="ModoDeSelección" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="BaseDeDatos" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="integrantesGrupo" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -126,6 +126,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Conectar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="conectarBotonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -233,7 +236,7 @@
                   </Group>
                   <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="155" max="32767" attributes="0"/>
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
