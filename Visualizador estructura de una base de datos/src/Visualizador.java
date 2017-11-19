@@ -1,10 +1,18 @@
 import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 public class Visualizador extends javax.swing.JFrame {
 
+    private DefaultListModel tablas = new DefaultListModel();
+    private DefaultListModel campos = new DefaultListModel();
+    private ConnectionJDBC conexion;
+    private ArrayList tablasSQL;
+
     public Visualizador() {
         initComponents();
+        cerrarSesion();
         super.setLocationRelativeTo(null);
     }
 
@@ -18,18 +26,18 @@ public class Visualizador extends javax.swing.JFrame {
         nombre = new javax.swing.JTextField();
         contraseñaLabel = new javax.swing.JLabel();
         contraseña = new javax.swing.JPasswordField();
-        conectarBoton = new javax.swing.JButton();
+        conectarButton = new javax.swing.JButton();
+        desconectarButton = new javax.swing.JButton();
         ModoDeSelección = new javax.swing.JPanel();
         simple = new javax.swing.JToggleButton();
         intervalo = new javax.swing.JToggleButton();
         intervaloMultiple = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
         BaseDeDatos = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablas = new javax.swing.JList<>();
-        añadirTabla = new javax.swing.JButton();
-        eliminarTabla = new javax.swing.JButton();
+        listaTablas = new javax.swing.JList<>(tablas);
         jScrollPane2 = new javax.swing.JScrollPane();
-        campos = new javax.swing.JList<>();
+        listaCampos = new javax.swing.JList<>(campos);
         integrantesGrupo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -43,10 +51,17 @@ public class Visualizador extends javax.swing.JFrame {
 
         contraseñaLabel.setText("Contraseña:");
 
-        conectarBoton.setText("Conectar");
-        conectarBoton.addActionListener(new java.awt.event.ActionListener() {
+        conectarButton.setText("Conectar");
+        conectarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                conectarBotonActionPerformed(evt);
+                conectarButtonActionPerformed(evt);
+            }
+        });
+
+        desconectarButton.setText("Desconectar");
+        desconectarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desconectarButtonActionPerformed(evt);
             }
         });
 
@@ -62,9 +77,11 @@ public class Visualizador extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(contraseñaLabel)
                 .addGap(2, 2, 2)
-                .addComponent(contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(conectarBoton)
+                .addComponent(contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addComponent(conectarButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(desconectarButton)
                 .addContainerGap())
         );
         ConexiónLayout.setVerticalGroup(
@@ -75,20 +92,26 @@ public class Visualizador extends javax.swing.JFrame {
                     .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(contraseñaLabel)
                     .addComponent(contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(conectarBoton))
+                    .addComponent(conectarButton)
+                    .addComponent(desconectarButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         ModoDeSelección.setBorder(javax.swing.BorderFactory.createTitledBorder("Modo de Selección\n"));
 
         selectionMode.add(simple);
-        simple.setText("Selección Simple");
+        simple.setText("Simple");
+        simple.setPreferredSize(new java.awt.Dimension(119, 25));
 
         selectionMode.add(intervalo);
-        intervalo.setText("Selección Intervalo");
+        intervalo.setText("Intervalo");
+        intervalo.setPreferredSize(new java.awt.Dimension(119, 25));
 
         selectionMode.add(intervaloMultiple);
-        intervaloMultiple.setText("Selección Multiple Intervalos");
+        intervaloMultiple.setText("Multiple Intervalos");
+
+        jButton1.setText("Limpiar");
+        jButton1.setPreferredSize(new java.awt.Dimension(119, 25));
 
         javax.swing.GroupLayout ModoDeSelecciónLayout = new javax.swing.GroupLayout(ModoDeSelección);
         ModoDeSelección.setLayout(ModoDeSelecciónLayout);
@@ -97,10 +120,12 @@ public class Visualizador extends javax.swing.JFrame {
             .addGroup(ModoDeSelecciónLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(simple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(134, 134, 134)
+                .addGap(59, 59, 59)
                 .addComponent(intervalo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(136, 136, 136)
-                .addComponent(intervaloMultiple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(85, 85, 85)
+                .addComponent(intervaloMultiple, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                .addGap(50, 50, 50)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         ModoDeSelecciónLayout.setVerticalGroup(
@@ -108,26 +133,20 @@ public class Visualizador extends javax.swing.JFrame {
             .addGroup(ModoDeSelecciónLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ModoDeSelecciónLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(simple)
-                    .addComponent(intervalo)
-                    .addComponent(intervaloMultiple))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(simple, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(intervalo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(intervaloMultiple)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         BaseDeDatos.setBorder(javax.swing.BorderFactory.createTitledBorder("Base de Datos\n"));
 
-        tablas.setBorder(javax.swing.BorderFactory.createTitledBorder("Tablas"));
-        jScrollPane1.setViewportView(tablas);
+        listaTablas.setBorder(javax.swing.BorderFactory.createTitledBorder("Tablas"));
+        jScrollPane1.setViewportView(listaTablas);
 
-        añadirTabla.setText("Añadir");
-        añadirTabla.setMaximumSize(new java.awt.Dimension(70, 25));
-        añadirTabla.setMinimumSize(new java.awt.Dimension(70, 25));
-        añadirTabla.setPreferredSize(new java.awt.Dimension(70, 25));
-
-        eliminarTabla.setText("Eliminar");
-
-        campos.setBorder(javax.swing.BorderFactory.createTitledBorder("Campos"));
-        jScrollPane2.setViewportView(campos);
+        listaCampos.setBorder(javax.swing.BorderFactory.createTitledBorder("Campos"));
+        jScrollPane2.setViewportView(listaCampos);
 
         javax.swing.GroupLayout BaseDeDatosLayout = new javax.swing.GroupLayout(BaseDeDatos);
         BaseDeDatos.setLayout(BaseDeDatosLayout);
@@ -135,28 +154,17 @@ public class Visualizador extends javax.swing.JFrame {
             BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BaseDeDatosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(BaseDeDatosLayout.createSequentialGroup()
-                        .addComponent(añadirTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(eliminarTabla)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(BaseDeDatosLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2)))
+                .addComponent(jScrollPane1)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2)
                 .addContainerGap())
         );
         BaseDeDatosLayout.setVerticalGroup(
             BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BaseDeDatosLayout.createSequentialGroup()
-                .addGroup(BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(añadirTabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(eliminarTabla))
-                .addGap(6, 6, 6)
                 .addGroup(BaseDeDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
 
@@ -195,25 +203,80 @@ public class Visualizador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void conectarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarBotonActionPerformed
-        if(nombre.getText().isEmpty())
-            JOptionPane.showMessageDialog(rootPane, "El campo de usuario no es correcto.", 
-                    "Campo usuario", JOptionPane.ERROR_MESSAGE);
-        if(contraseña.getText().isEmpty())
-            JOptionPane.showMessageDialog(rootPane, "El campo de password no es correcto.", 
-                    "Campo password", JOptionPane.ERROR_MESSAGE);
-        ConnectionJDBC sql = new ConnectionJDBC(nombre.getText(), contraseña.getText());
-        try {
-            sql.connection();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Error al acceder a la base de datos.", 
-                    "Error de acceso a la base de datos", JOptionPane.ERROR_MESSAGE);
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Error del driver de la base de datos.", 
-                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_conectarBotonActionPerformed
+    private void conectarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarButtonActionPerformed
+        //if(validarSesion())
+            establecerConexion();
+    }//GEN-LAST:event_conectarButtonActionPerformed
 
+    private boolean validarSesion() {
+        if (nombre.getText().isEmpty() && contraseña.getText().isEmpty())
+            return false;
+        else if (nombre.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "El campo de usuario no es correcto.",
+                    "Campo usuario", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        else if (contraseña.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "El campo de password no es correcto.",
+                    "Campo password", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    private void establecerConexion() {
+        try {
+            conexion = new ConnectionJDBC(nombre.getText(), contraseña.getText());
+            conexion.connection();
+            iniciarSesion();
+            mostrarTablas(tablas, conexion.getTablas());
+            mostrarTablas(campos, conexion.getCampos());
+        } catch (SQLException ex) {
+            errorConexionBaseDatos();
+        } catch (ClassNotFoundException ex) {
+            errorDriver();
+        }
+    }
+    
+    private void iniciarSesion() {
+        nombre.setEditable(false);
+        contraseña.setEditable(false);
+        conectarButton.setEnabled(false);
+        desconectarButton.setEnabled(true);
+    }
+    
+    private void mostrarTablas(DefaultListModel model, ArrayList tablas) throws SQLException {
+        for (Object tabla : tablas) {
+            model.addElement(tabla);
+        }
+    }
+    
+    private void errorConexionBaseDatos() {
+        JOptionPane.showMessageDialog(rootPane, "Error en la conexión de la base de datos.",
+                "Error de acceso a la base de datos", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void errorDriver() {
+        JOptionPane.showMessageDialog(rootPane, "Error del driver de la base de datos.",
+                "Error de conexión", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void desconectarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desconectarButtonActionPerformed
+        try {
+            conexion.close();
+            cerrarSesion();
+        } catch (SQLException ex) {
+            errorConexionBaseDatos();
+        }
+    }//GEN-LAST:event_desconectarButtonActionPerformed
+    
+    private void cerrarSesion() {
+        nombre.setEditable(true);
+        contraseña.setEditable(true);
+        conectarButton.setEnabled(true);
+        desconectarButton.setEnabled(false);
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -250,21 +313,21 @@ public class Visualizador extends javax.swing.JFrame {
     private javax.swing.JPanel BaseDeDatos;
     private javax.swing.JPanel Conexión;
     private javax.swing.JPanel ModoDeSelección;
-    private javax.swing.JButton añadirTabla;
-    private javax.swing.JList<String> campos;
-    private javax.swing.JButton conectarBoton;
+    private javax.swing.JButton conectarButton;
     private javax.swing.JPasswordField contraseña;
     private javax.swing.JLabel contraseñaLabel;
-    private javax.swing.JButton eliminarTabla;
+    private javax.swing.JButton desconectarButton;
     private javax.swing.JLabel integrantesGrupo;
     private javax.swing.JToggleButton intervalo;
     private javax.swing.JToggleButton intervaloMultiple;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JList<String> listaCampos;
+    private javax.swing.JList<String> listaTablas;
     private javax.swing.JTextField nombre;
     private javax.swing.ButtonGroup selectionMode;
     private javax.swing.JToggleButton simple;
-    private javax.swing.JList<String> tablas;
     private javax.swing.JLabel usuarioLabel;
     // End of variables declaration//GEN-END:variables
 }
